@@ -12,8 +12,13 @@ export class StrategicController {
     return this.strategicService.create(createStrategicDto);
   }
   @Get()
-  async findAll(@Query() query: { name?: string; is_active?: boolean;}) {
-    return this.strategicService.findAll(query);
+  async findAll(@Query() query: { name?: string; is_active?: string }) {
+    const filters = {
+      name: query.name || undefined,
+      is_active: query.is_active === 'true' ? true : (query.is_active === 'false' ? false : undefined)
+    };
+
+    return this.strategicService.findAll(filters);
   }
 
   @Get(':id')

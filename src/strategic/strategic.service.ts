@@ -5,6 +5,7 @@ import { Strategic } from './entities/strategic.entity';
 import { CreateStrategicDto } from './dto/create-strategic.dto';
 import { UpdateStrategicDto } from './dto/update-strategic.dto';
 import { createResponse } from 'src/utils/response.util';
+import { applyFilters } from 'src/utils/buildquery.util';
 
 @Injectable()
 export class StrategicService {
@@ -18,24 +19,16 @@ export class StrategicService {
     const result = await this.strategicRepository.save(strategic);
     return createResponse(200, 'successfully', result);
   }
-
   async findAll(filter: { name?: string; is_active?: boolean }) {
     const query = this.strategicRepository.createQueryBuilder('strategic');
-    if (filter.name) {
-      query.andWhere('strategic.name LIKE :name', { name: `%${filter.name}%` });
-    }
-    if (filter.is_active !== undefined) {
-      query.andWhere('strategic.is_active = :is_active', {
-        is_active: filter.is_active,
-      });
-    }
-    query.andWhere('strategic.delete_flag = :delete_flag', {
-      delete_flag: false,
-    });
-    query.orderBy('strategic.name', 'ASC');
+    // Apply filters
+    applyFilters(query, filter, ['name', 'is_active']);
+    query.orderBy('strategic.social_plan_id', 'ASC');
     const result = await query.getMany();
     return createResponse(200, 'successfully', result);
   }
+
+
 
   async findOne(id: number) {
     const result = await this.strategicRepository.findOne({
@@ -71,7 +64,4 @@ export class StrategicService {
       return createResponse(404, 'Not Found or Already Deleted', null);
     }
   }
-  
-  
-  
 }
