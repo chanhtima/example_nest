@@ -3,8 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { FliesModule } from './flies/flies.module';
-import { ProductModule } from './product/product.module';
 import { StrategicModule } from './strategic/strategic.module';
 
 @Module({
@@ -19,8 +17,6 @@ import { StrategicModule } from './strategic/strategic.module';
       entities: [join(process.cwd(), 'dist/**/*.entity.js')],
       synchronize: true, // Enable automatic schema sync in development
     }),
-    ProductModule,
-    FliesModule,
     StrategicModule,
   ],
   controllers: [AppController],
